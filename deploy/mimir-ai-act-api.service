@@ -1,6 +1,6 @@
 [Unit]
 Description=MIMIR EU AI Act Compliance Checker — FastAPI HTTP wrapper
-Documentation=https://github.com/mimir-lv/mimir-ai-act-mcp
+Documentation=https://github.com/RealMillShop/mimir-ai-act-mcp
 After=network-online.target
 Wants=network-online.target
 

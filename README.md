@@ -25,7 +25,7 @@ Returns a structured report (see [schemas/compliance_report.json](schemas/compli
 ## Quickstart (Claude Desktop)
 
 ```bash
-git clone https://github.com/mimir-lv/mimir-ai-act-mcp
+git clone https://github.com/RealMillShop/mimir-ai-act-mcp
 cd mimir-ai-act-mcp
 pip install -e .
 cp .env.example .env  # add your ANTHROPIC_API_KEY
