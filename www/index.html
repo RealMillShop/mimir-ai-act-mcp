@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EU AI Act Compliance Checker · MIMIR</title>
+  <meta name="description" content="Free first-pass audit of your AI deployment (voice agent, chatbot, generated content, deepfake) against the EU AI Act Articles 5, 50, 53. Built by MIMIR.">
+  <link rel="stylesheet" href="ai-act-checker.css">
+</head>
+<body>
+  <main class="checker">
+    <header>
+      <p class="back"><a href="/">← mimir.lv</a></p>
+      <h1>EU AI Act Compliance Checker</h1>
+      <p class="lede">
+        Free first-pass audit of your AI deployment against EU Regulation 2024/1689.
+        Catches the top 12 violations most likely to bite SMBs.
+        Built by <a href="https://mimir.lv">MIMIR</a>. Not legal advice.
+      </p>
+      <p class="deadlines">
+        Article 5 prohibitions: <strong>in force since 2 Feb 2025</strong>.
+        Article 50 transparency: <strong>in force from 2 Aug 2026</strong>.
+      </p>
+    </header>
+
+    <form id="audit-form">
+      <label for="deployment_type">
+        Deployment type
+        <select id="deployment_type" name="deployment_type" required>
+          <option value="chatbot">Chatbot (text)</option>
+          <option value="voice_agent">Voice agent (phone / VoIP)</option>
+          <option value="generated_content">AI-generated content</option>
+          <option value="deepfake">Deepfake / AI-manipulated media</option>
+          <option value="biometric_system">Biometric system</option>
+          <option value="other">Other / mixed</option>
+        </select>
+      </label>
+
+      <label for="text">
+        Text to audit
+        <textarea id="text" name="text" required rows="10" minlength="1" maxlength="20000"
+          placeholder="Paste your voice agent script, chatbot opening, content brief, or deepfake marketing copy. EN, LV, LT, ET, RU all supported."></textarea>
+      </label>
+
+      <button type="submit" id="submit">Audit</button>
+      <p class="hint">Free: 3 audits per IP per day. <a href="https://apify.com/eu-ai-act-compliance-checker">Need more? Use it on Apify →</a></p>
+    </form>
+
+    <section id="result" hidden>
+      <h2>Audit result</h2>
+      <div id="result-summary"></div>
+      <ol id="result-violations"></ol>
+      <details id="result-recommendations" hidden>
+        <summary>General recommendations</summary>
+        <ul></ul>
+      </details>
+      <p class="disclaimer" id="result-disclaimer"></p>
+    </section>
+
+    <section class="cta" id="lead-cta" hidden>
+      <h2>Need help fixing these?</h2>
+      <p>MIMIR does full EU AI Act compliance audits, voice agent disclosure rewrites, C2PA content credential embedding, and deepfake transparency for marketing campaigns. Latvian, Lithuanian, Estonian, Russian, English.</p>
+      <p><a class="button" href="https://mimir.lv/contact?source=ai-act-checker">Talk to us →</a></p>
+    </section>
+
+    <footer>
+      <p>
+        <a href="https://github.com/mimir-lv/mimir-ai-act-mcp">Source on GitHub</a> ·
+        <a href="https://apify.com/eu-ai-act-compliance-checker">Apify Actor</a> ·
+        <a href="/">mimir.lv</a>
+      </p>
+    </footer>
+  </main>
+  <script src="ai-act-checker.js"></script>
+</body>
+</html>

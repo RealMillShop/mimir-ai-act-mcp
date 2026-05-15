@@ -1,0 +1,24 @@
+[Unit]
+Description=MIMIR EU AI Act Compliance Checker — FastAPI HTTP wrapper
+Documentation=https://github.com/mimir-lv/mimir-ai-act-mcp
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/mimir-ai-act-mcp
+# Replace REPLACE_ME with the real key before enabling — see deploy/README.md.
+# File mode 600 prevents read by non-root accounts.
+Environment="ANTHROPIC_API_KEY=REPLACE_ME"
+Environment="MIMIR_AUDIT_MODEL=claude-haiku-4-5-20251001"
+Environment="MIMIR_ALLOWED_ORIGINS=https://mimir.lv"
+# Bind to loopback only — Caddy reverse-proxies from /api/ai-act-audit/*.
+ExecStart=/root/mimir-ai-act-mcp/.venv/bin/uvicorn http_main:app --host 127.0.0.1 --port 8200
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

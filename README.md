@@ -103,7 +103,42 @@ Input text accepted in **English, Latvian, Lithuanian, Estonian, and Russian**. 
 - **Model:** `claude-haiku-4-5` by default (fast, cheap). Set `MIMIR_AUDIT_MODEL=claude-sonnet-4-6` to escalate.
 - **Structured output:** the model is forced to call a `submit_compliance_report` tool whose `input_schema` is the JSON Schema in [schemas/compliance_report.json](schemas/compliance_report.json). No JSON-string parsing.
 - **Prompt caching:** the system prompt + violations catalog + relevant AI Act articles are cached server-side with `cache_control: ephemeral`. Audits within the 5-minute TTL reuse cache.
-- **Transports:** stdio (Claude Desktop, Cursor); HTTP wrapper (`http_main.py`) reuses the same audit function for Apify and the `mimir.lv/ai-act-checker` lead page.
+- **Single core function:** [`audit_ai_deployment()`](server.py) is the source of truth, reused unchanged by all three transports below.
+
+## Other deployment modes
+
+In addition to the stdio MCP server above, the same audit function is exposed via:
+
+### HTTP wrapper (FastAPI)
+
+For server-to-server use, behind a reverse proxy, or as the backing API for the [mimir.lv/ai-act-checker](https://mimir.lv/ai-act-checker) lead page:
+
+```bash
+pip install -e ".[http]"
+uvicorn http_main:app --host 127.0.0.1 --port 8200
+curl -s http://127.0.0.1:8200/health
+curl -s -X POST http://127.0.0.1:8200/audit \
+  -H 'Content-Type: application/json' \
+  -d '{"text":"Hello, this is Anna from BrightHouse.","deployment_type":"voice_agent"}'
+```
+
+Production deployment runs as the `mimir-ai-act-api` systemd unit on the MIMIR VPS, fronted by Caddy at `https://mimir.lv/api/ai-act-audit/`. See [deploy/README.md](deploy/README.md) for the full runbook.
+
+### Apify Actor
+
+Packaged as an Apify Actor for non-technical users — paste text into a web form, get a JSON compliance report back.
+
+```bash
+npm install -g apify-cli
+apify login
+apify push
+```
+
+Configuration lives in [.actor/actor.json](.actor/actor.json) and [.actor/INPUT_SCHEMA.json](.actor/INPUT_SCHEMA.json). Build uses [Dockerfile.actor](Dockerfile.actor) (base image `apify/actor-python:3.11`) and the [`apify`] extras. Pricing target: pay-per-event at $0.05 per audit (first 100 audits per user free).
+
+### mimir.lv lead page
+
+Static landing at [www/](www/) (`index.html` + minimal CSS/JS). POSTs to the same `/audit` endpoint as the HTTP wrapper. Rate-limited at the Caddy layer to 3 audits per IP per day for the free funnel; paying users go through Apify.
 
 ## Testing
 
@@ -129,9 +164,11 @@ Two test suites:
 
 ## Roadmap
 
+- v0.2 — Public release on Apify Store + go-live on `mimir.lv/ai-act-checker`
+- v0.3 — Caddy rate-limiting on the free funnel (3 audits/IP/day)
+- v1.0 — Live golden-set eval green on 20 labeled examples (recall ≥0.85, precision ≥0.75, consistency ≥0.80)
 - v1.1 — Latvian / Lithuanian / Estonian / Russian report output
-- v1.2 — Article 26 deployer obligations; Annex III high-risk classification
-- v1.3 — Apify Actor + HTTP wrapper, public release on Apify Store
+- v1.2 — Article 26 deployer obligations + Annex III high-risk classification
 - v2 — Image / audio / video input via Claude vision
 
 ## About MIMIR

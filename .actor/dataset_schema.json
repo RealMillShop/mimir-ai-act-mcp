@@ -1,0 +1,31 @@
+{
+  "actorSpecification": 1,
+  "fields": {},
+  "views": {
+    "overview": {
+      "title": "Compliance reports",
+      "description": "One row per audit. Click a row for the full violations list.",
+      "transformation": {
+        "fields": [
+          "compliance_status",
+          "risk_score",
+          "violations",
+          "general_recommendations",
+          "audited_at",
+          "audit_version"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "compliance_status": { "label": "Status", "format": "text" },
+          "risk_score": { "label": "Risk", "format": "number" },
+          "violations": { "label": "Violations", "format": "array" },
+          "general_recommendations": { "label": "Recommendations", "format": "array" },
+          "audited_at": { "label": "Audited at", "format": "date" },
+          "audit_version": { "label": "Version", "format": "text" }
+        }
+      }
+    }
+  }
+}

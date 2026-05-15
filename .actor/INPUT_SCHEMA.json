@@ -1,0 +1,41 @@
+{
+  "title": "EU AI Act Compliance Checker — Input",
+  "description": "Provide the text to audit and the kind of AI deployment it describes.",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "text": {
+      "title": "Text to audit",
+      "description": "Voice agent script, chatbot opening message, generated content brief, deepfake marketing copy, or biometric system description. Up to ~20,000 characters. Accepts input in English, Latvian, Lithuanian, Estonian, and Russian.",
+      "type": "string",
+      "editor": "textarea",
+      "minLength": 1,
+      "maxLength": 20000,
+      "prefill": "Hello, this is Anna from BrightHouse Energy. How are you doing today? I'm reaching out because we've helped homeowners cut their electricity bill by 30%."
+    },
+    "deployment_type": {
+      "title": "Deployment type",
+      "description": "What kind of AI deployment is being audited.",
+      "type": "string",
+      "enum": [
+        "voice_agent",
+        "chatbot",
+        "generated_content",
+        "deepfake",
+        "biometric_system",
+        "other"
+      ],
+      "enumTitles": [
+        "Voice agent (phone / VoIP)",
+        "Chatbot (text)",
+        "AI-generated content (image / video / text)",
+        "Deepfake / AI-manipulated media",
+        "Biometric system (face, emotion, ID)",
+        "Other / mixed"
+      ],
+      "editor": "select",
+      "default": "voice_agent"
+    }
+  },
+  "required": ["text", "deployment_type"]
+}

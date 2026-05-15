@@ -1,0 +1,23 @@
+{
+  "actorSpecification": 1,
+  "name": "eu-ai-act-compliance-checker",
+  "title": "EU AI Act Compliance Checker",
+  "description": "First-pass audit of an AI deployment (voice agent, chatbot, generated content, deepfake, biometric system) against EU Regulation 2024/1689 — the AI Act. Catches the top 12 violations most likely to bite SMBs across Articles 5 (prohibited practices), 50 (transparency), and 53 (GPAI obligations). Accepts input in EN/LV/LT/ET/RU.",
+  "version": "0.1",
+  "buildTag": "latest",
+  "meta": {
+    "templateId": "python-start"
+  },
+  "input": "./INPUT_SCHEMA.json",
+  "dockerfile": "../Dockerfile.actor",
+  "readme": "../README.md",
+  "minMemoryMbytes": 256,
+  "maxMemoryMbytes": 1024,
+  "defaultMemoryMbytes": 512,
+  "environmentVariables": {
+    "MIMIR_AUDIT_MODEL": "claude-haiku-4-5-20251001"
+  },
+  "storages": {
+    "dataset": "./dataset_schema.json"
+  }
+}
