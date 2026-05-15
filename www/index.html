@@ -3,8 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>EU AI Act Compliance Checker · MIMIR</title>
-  <meta name="description" content="Free first-pass audit of your AI deployment (voice agent, chatbot, generated content, deepfake) against the EU AI Act Articles 5, 50, 53. Built by MIMIR.">
+  <title>EU AI Act Compliance Checker · Free Audit · MIMIR</title>
+  <meta name="description" content="Free first-pass audit of your AI deployment — voice agents, chatbots, AI-generated content, deepfakes — against EU Regulation 2024/1689 (Article 5 + Article 50 + Article 53). EN/LV/LT/ET/RU input. Built by MIMIR.">
+
+  <link rel="canonical" href="https://mimir.lv/ai-act-checker/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mimir.lv/ai-act-checker/">
+  <meta property="og:title" content="EU AI Act Compliance Checker — Free First-Pass Audit">
+  <meta property="og:description" content="Paste your voice agent script, chatbot opening, or generated content brief. Get back a structured compliance report against the EU AI Act Articles 5, 50, 53. EN/LV/LT/ET/RU. Free, by MIMIR.">
+  <meta property="og:image" content="https://mimir.lv/ai-act-checker/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="MIMIR">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="EU AI Act Compliance Checker — Free First-Pass Audit">
+  <meta name="twitter:description" content="Free audit of your AI deployment against EU Regulation 2024/1689. Article 5 is in force. Article 50 lands 2026-08-02. By MIMIR.">
+  <meta name="twitter:image" content="https://mimir.lv/ai-act-checker/og.png">
+
   <style>
     * { box-sizing: border-box; }
     html { -webkit-text-size-adjust: 100%; }
@@ -28,7 +45,8 @@
     .back a:hover { color: #1a1a1a; }
     h1 { font-size: 1.85rem; margin: 0.25rem 0 0.75rem; line-height: 1.2; }
     h2 { font-size: 1.25rem; margin: 2rem 0 1rem; }
-    .lede { color: #444; margin: 0 0 1rem; }
+    .lede { color: #444; margin: 0 0 0.5rem; }
+    .built-by { color: #666; font-size: 0.92rem; margin: 0 0 1rem; }
     .deadlines {
       background: #f4f0e6;
       padding: 0.5rem 0.85rem;
@@ -49,7 +67,18 @@
     }
     select:focus, textarea:focus { outline: 2px solid #1a1a1a; outline-offset: -1px; }
     textarea { resize: vertical; min-height: 160px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92rem; }
-    button {
+    .sample-link {
+      font-size: 0.85rem;
+      color: #666;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      text-decoration: underline;
+      font-weight: 400;
+    }
+    .sample-link:hover { color: #1a1a1a; }
+    button[type="submit"] {
       font: inherit;
       font-weight: 600;
       background: #1a1a1a;
@@ -59,9 +88,61 @@
       border-radius: 6px;
       cursor: pointer;
     }
-    button:hover { background: #333; }
+    button[type="submit"]:hover { background: #333; }
     button[disabled] { opacity: 0.6; cursor: wait; }
     .hint { font-size: 0.85rem; color: #666; margin-top: 0.65rem; }
+
+    /* Persistent CTA — visible on first page load, before any audit */
+    .persistent-cta {
+      background: white;
+      border: 1px solid #e4e4dc;
+      border-left: 4px solid #1a1a1a;
+      border-radius: 6px;
+      padding: 1.1rem 1.25rem;
+      margin: 2rem 0;
+    }
+    .persistent-cta p { margin: 0; }
+    .persistent-cta strong { display: block; margin-bottom: 0.35rem; font-size: 1.02rem; }
+    .persistent-cta .book {
+      display: inline-block;
+      margin-top: 0.5rem;
+      color: #1a1a1a;
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 2px solid #1a1a1a;
+    }
+    .persistent-cta .book:hover { color: #5a5a5a; border-color: #5a5a5a; }
+
+    /* What we check — expandable list */
+    .what-we-check {
+      margin: 2rem 0;
+      background: white;
+      border: 1px solid #e4e4dc;
+      border-radius: 6px;
+      padding: 0.4rem 1.25rem;
+    }
+    .what-we-check summary {
+      cursor: pointer;
+      font-weight: 600;
+      padding: 0.7rem 0;
+      list-style: none;
+    }
+    .what-we-check summary::-webkit-details-marker { display: none; }
+    .what-we-check summary::before { content: "▸ "; color: #666; transition: transform 0.15s; display: inline-block; }
+    .what-we-check[open] summary::before { content: "▾ "; }
+    .what-we-check ol {
+      margin: 0 0 1rem;
+      padding-left: 1.4rem;
+      font-size: 0.94rem;
+    }
+    .what-we-check li { margin: 0.4rem 0; }
+    .what-we-check .v-id {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      color: #666;
+      font-size: 0.82rem;
+    }
+
+    /* Audit result card */
     #result {
       background: white;
       border: 1px solid #e4e4dc;
@@ -119,6 +200,8 @@
     }
     details summary { cursor: pointer; color: #666; font-size: 0.9rem; }
     .disclaimer { font-size: 0.8rem; color: #888; margin-top: 1.5rem; }
+
+    /* Post-audit CTA (dark, accent) */
     .cta {
       background: #1a1a1a;
       color: #fafaf7;
@@ -139,10 +222,18 @@
       margin-top: 0.5rem;
     }
     .cta a.button:hover { background: #f0f0e6; }
-    footer {
+
+    /* Privacy + footer */
+    .privacy {
       margin-top: 3rem;
+      font-size: 0.85rem;
+      color: #666;
       padding-top: 1rem;
       border-top: 1px solid #e4e4dc;
+    }
+    .privacy strong { color: #444; }
+    footer {
+      margin-top: 2rem;
       font-size: 0.85rem;
       color: #888;
       text-align: center;
@@ -157,8 +248,11 @@
       <h1>EU AI Act Compliance Checker</h1>
       <p class="lede">
         Free first-pass audit of your AI deployment against EU Regulation 2024/1689.
-        Catches the top 12 violations most likely to bite SMBs.
-        Built by <a href="https://mimir.lv">MIMIR</a>. Not legal advice.
+        Catches the top 12 violations most likely to bite SMBs. Not legal advice.
+      </p>
+      <p class="built-by">
+        Built by <a href="https://mimir.lv">MIMIR</a> — AI agency based in Riga, EU.
+        We build AI Act-compliant voice agents, chatbots, and content systems from day one.
       </p>
       <p class="deadlines">
         Article 5 prohibitions: <strong>in force since 2 Feb 2025</strong>.
@@ -184,10 +278,40 @@
         <textarea id="text" name="text" required rows="10" minlength="1" maxlength="20000"
           placeholder="Paste your voice agent script, chatbot opening, content brief, or deepfake marketing copy. EN, LV, LT, ET, RU all supported."></textarea>
       </label>
+      <p class="hint">
+        Don't have one handy?
+        <button type="button" class="sample-link" id="load-sample">Try with a sample voice agent script →</button>
+      </p>
 
-      <button type="submit" id="submit">Audit</button>
+      <p style="margin-top:1rem"><button type="submit" id="submit">Audit</button></p>
       <p class="hint">Free: 3 audits per IP per day. <a href="https://apify.com/eu-ai-act-compliance-checker">Need more? Use it on Apify →</a></p>
     </form>
+
+    <section class="persistent-cta">
+      <p>
+        <strong>Building AI agents and don't want to deal with this later?</strong>
+        MIMIR builds AI Act-compliant voice agents, chatbots, and content systems from day one — proper Art. 50 disclosures, consent flows, C2PA on generated content, deepfake transparency for marketing.
+        <a class="book" href="https://mimir.lv/contact?source=ai-act-checker">Book a free 20-min compliance call →</a>
+      </p>
+    </section>
+
+    <details class="what-we-check">
+      <summary>See the 12 violations we check</summary>
+      <ol>
+        <li><strong>Chatbot missing AI disclosure</strong> <span class="v-id">— V001 · Article 50(1)</span></li>
+        <li><strong>Voice agent missing AI disclosure</strong> <span class="v-id">— V002 · Article 50(1)</span></li>
+        <li><strong>Synthetic content not machine-readable marked</strong> <span class="v-id">— V003 · Article 50(2)</span></li>
+        <li><strong>Deepfake without clear disclosure</strong> <span class="v-id">— V004 · Article 50(4)</span></li>
+        <li><strong>AI-generated public-interest text without label</strong> <span class="v-id">— V005 · Article 50(4)</span></li>
+        <li><strong>Subliminal or manipulative techniques causing significant harm</strong> <span class="v-id">— V006 · Article 5(1)(a) · prohibited</span></li>
+        <li><strong>Exploitation of vulnerabilities (age, disability, social/economic situation)</strong> <span class="v-id">— V007 · Article 5(1)(b) · prohibited</span></li>
+        <li><strong>Social scoring with detrimental treatment</strong> <span class="v-id">— V008 · Article 5(1)(c) · prohibited</span></li>
+        <li><strong>Emotion recognition in workplace or education</strong> <span class="v-id">— V009 · Article 5(1)(f) · prohibited</span></li>
+        <li><strong>Biometric categorisation for sensitive attributes</strong> <span class="v-id">— V010 · Article 5(1)(g) · prohibited</span></li>
+        <li><strong>Real-time remote biometric identification in public spaces</strong> <span class="v-id">— V011 · Article 5(1)(h) · prohibited</span></li>
+        <li><strong>GPAI provider missing documentation / training-data summary / copyright policy</strong> <span class="v-id">— V012 · Article 53</span></li>
+      </ol>
+    </details>
 
     <section id="result" hidden>
       <h2>Audit result</h2>
@@ -203,13 +327,24 @@
     <section class="cta" id="lead-cta" hidden>
       <h2>Need help fixing these?</h2>
       <p>MIMIR does full EU AI Act compliance audits, voice agent disclosure rewrites, C2PA content credential embedding, and deepfake transparency for marketing campaigns. Latvian, Lithuanian, Estonian, Russian, English.</p>
-      <p><a class="button" href="https://mimir.lv/contact?source=ai-act-checker">Talk to us →</a></p>
+      <p><a class="button" href="https://mimir.lv/contact?source=ai-act-checker-result">Talk to us →</a></p>
+    </section>
+
+    <section class="privacy">
+      <p>
+        <strong>Privacy &amp; processing.</strong>
+        Your input is sent to the Anthropic Claude API for analysis and is <strong>not stored</strong> on MIMIR servers. We do not log audited text and do not track you beyond IP-based rate limiting (3 audits per IP per day, reset daily). No cookies. No third-party analytics on this page.
+      </p>
+      <p>
+        This is an automated first-pass check, not legal advice. For binding compliance decisions, consult qualified counsel — MIMIR or otherwise.
+      </p>
     </section>
 
     <footer>
       <p>
         <a href="https://github.com/mimir-lv/mimir-ai-act-mcp">Source on GitHub</a> ·
         <a href="https://apify.com/eu-ai-act-compliance-checker">Apify Actor</a> ·
+        Install as MCP for Cursor / Claude Desktop: see <a href="https://github.com/mimir-lv/mimir-ai-act-mcp#quickstart-claude-desktop">README</a> ·
         <a href="/">mimir.lv</a>
       </p>
     </footer>
@@ -225,12 +360,17 @@
       const recsDetails = document.getElementById("result-recommendations");
       const disclaimerEl = document.getElementById("result-disclaimer");
       const leadCta = document.getElementById("lead-cta");
+      const loadSample = document.getElementById("load-sample");
+      const textArea = document.getElementById("text");
+      const typeSelect = document.getElementById("deployment_type");
 
       const STATUS_LABEL = {
         compliant: "COMPLIANT",
         needs_review: "NEEDS REVIEW",
         non_compliant: "NON-COMPLIANT",
       };
+
+      const SAMPLE_VOICE = "Hello, this is Anna from BrightHouse Energy. How are you doing today? I'm reaching out because we've helped homeowners across the Baltics cut their electricity bill by an average of 30%. Do you have a couple of minutes to chat?";
 
       function escapeHtml(s) {
         return String(s)
@@ -274,13 +414,20 @@
         disclaimerEl.textContent = report.disclaimer;
         resultSection.hidden = false;
         leadCta.hidden = report.violations.length === 0;
+        resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
       }
+
+      loadSample.addEventListener("click", function () {
+        textArea.value = SAMPLE_VOICE;
+        typeSelect.value = "voice_agent";
+        textArea.focus();
+      });
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         const payload = {
-          text: document.getElementById("text").value.trim(),
-          deployment_type: document.getElementById("deployment_type").value,
+          text: textArea.value.trim(),
+          deployment_type: typeSelect.value,
         };
         if (!payload.text) return;
 
