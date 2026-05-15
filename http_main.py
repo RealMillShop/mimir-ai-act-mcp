@@ -16,6 +16,7 @@ from __future__ import annotations
 import os
 from typing import Any
 
+from anthropic import APIError
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
@@ -67,5 +68,7 @@ def audit(req: AuditRequest) -> dict[str, Any]:
         return audit_ai_deployment(req.text, req.deployment_type)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except APIError as e:
+        raise HTTPException(status_code=502, detail=f"Upstream model API error: {e.message}")
     except RuntimeError as e:
         raise HTTPException(status_code=502, detail=str(e))
