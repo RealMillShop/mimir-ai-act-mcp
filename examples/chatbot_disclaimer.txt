@@ -1,0 +1,19 @@
+=== Variant A — non-compliant chatbot opener ===
+Deployment type: chatbot
+Expected verdict: non_compliant (V001 — Art. 50(1) missing AI disclosure)
+
+Hi there! I'm Maria, your dedicated customer support specialist at BrightHouse Energy. I'm here 24/7 to help you with any questions about your bill, your tariff, outages in your area, or your account settings. So — how can I help you today?
+
+
+=== Variant B — compliant chatbot opener ===
+Deployment type: chatbot
+Expected verdict: compliant
+
+Welcome to BrightHouse Energy! You're chatting with our AI assistant. I can help with bill questions, tariff info, outage status, and basic account changes. For complex issues I can hand you to a human agent during business hours. What can I help with?
+
+
+=== Variant C — Russian non-compliant (multilingual test) ===
+Deployment type: chatbot
+Expected verdict: non_compliant (V001)
+
+Здравствуйте! Меня зовут Мария, я ваш персональный консультант BrightHouse Energy. Я работаю круглосуточно и помогу вам с любыми вопросами по счетам, тарифам, авариям на сети и настройкам аккаунта. Чем могу помочь?

@@ -1,0 +1,230 @@
+{
+  "version": "1.0",
+  "source": "Regulation (EU) 2024/1689 — Artificial Intelligence Act",
+  "last_updated": "2026-05-16",
+  "notes": "Top 12 violations most likely to appear in SMB AI deployments. Detection is LLM-driven; detection_hints are soft anchors and not strict matchers. Hints are intentionally multilingual (EN/LV/RU minimum). The catalog covers Articles 5, 50, and 53 of the AI Act.",
+  "violations": [
+    {
+      "id": "V001",
+      "article": "Article 50(1)",
+      "title": "Chatbot missing AI disclosure",
+      "severity": "high",
+      "in_force_since": "2026-08-02",
+      "applies_to": ["chatbot"],
+      "description": "Text-based AI systems intended to interact directly with natural persons must inform users at the first interaction that they are interacting with an AI system, unless this is obvious from context to a reasonably well-informed person.",
+      "detection_hints": {
+        "en": ["chatbot", "assistant", "support", "help", "agent", "concierge", "virtual"],
+        "lv": ["čats", "asistents", "atbalsts", "palīgs", "virtuālais"],
+        "ru": ["чат", "ассистент", "помощник", "поддержка", "консультант", "виртуальный"]
+      },
+      "compliant_example": "Welcome to [Company]! You're chatting with our AI assistant. I can help with product questions, orders, and returns. How can I help?",
+      "non_compliant_example": "Hi! I'm Maria, your dedicated customer support assistant. How can I help you today?",
+      "suggested_fix_template": "Replace the opening greeting with one that clearly discloses AI status, e.g. 'You are chatting with an AI assistant from [Company].'",
+      "penalty_range_eur": "up to €15M or 3% of global annual turnover (Art. 99(4))"
+    },
+    {
+      "id": "V002",
+      "article": "Article 50(1)",
+      "title": "Voice agent missing AI disclosure",
+      "severity": "high",
+      "in_force_since": "2026-08-02",
+      "applies_to": ["voice_agent"],
+      "description": "Voice- or phone-based AI systems interacting directly with natural persons must inform users at the start of the conversation that they are speaking with an AI, unless this is obvious from context.",
+      "detection_hints": {
+        "en": ["voice", "phone", "call", "calling", "speaking", "hello this is", "hi this is"],
+        "lv": ["balss", "telefons", "zvans", "runa", "sveiki", "labdien"],
+        "ru": ["голос", "телефон", "звонок", "звоню", "говорю", "здравствуйте", "добрый день"]
+      },
+      "compliant_example": "Hello, you are speaking with an AI assistant from [Company]. How may I help you today?",
+      "non_compliant_example": "Hello, this is Anna from [Company]. How are you doing today?",
+      "suggested_fix_template": "Replace the opening with: 'You are speaking with an AI assistant from [Company]' — in the same language as the script.",
+      "penalty_range_eur": "up to €15M or 3% of global annual turnover (Art. 99(4))"
+    },
+    {
+      "id": "V003",
+      "article": "Article 50(2)",
+      "title": "Synthetic content not machine-readable marked",
+      "severity": "high",
+      "in_force_since": "2026-08-02",
+      "applies_to": ["generated_content"],
+      "description": "Providers of generative AI systems must mark outputs (audio, image, video, text) in a machine-readable format detectable as artificially generated or manipulated (e.g., C2PA content credentials, watermarking, provenance metadata).",
+      "detection_hints": {
+        "en": ["generated", "synthetic", "AI-generated", "midjourney", "diffusion", "watermark", "C2PA", "provenance", "metadata"],
+        "lv": ["ģenerēts", "sintētisks", "MI veidots", "ūdenszīme"],
+        "ru": ["сгенерирован", "синтетический", "ИИ-сгенерированный", "водяной знак"]
+      },
+      "compliant_example": "All product images embed C2PA content credentials marking them as AI-generated. Metadata is preserved end-to-end through the CDN.",
+      "non_compliant_example": "We generated the product images with Midjourney and uploaded them directly to the site. Done.",
+      "suggested_fix_template": "Embed C2PA content credentials or equivalent machine-readable provenance metadata on every AI-generated asset before publication.",
+      "penalty_range_eur": "up to €15M or 3% of global annual turnover (Art. 99(4))"
+    },
+    {
+      "id": "V004",
+      "article": "Article 50(4)",
+      "title": "Deepfake without disclosure",
+      "severity": "high",
+      "in_force_since": "2026-08-02",
+      "applies_to": ["deepfake"],
+      "description": "Deployers of AI systems generating or manipulating image, audio, or video content that constitutes a deepfake must clearly and distinguishably disclose that the content has been artificially generated or manipulated. Disclosure must be visible/audible at first exposure.",
+      "detection_hints": {
+        "en": ["deepfake", "lipsync", "face swap", "AI clone", "synthetic voice", "AI avatar", "voice clone", "AI-generated video"],
+        "lv": ["dziļviltojums", "lūpu sinhronizācija", "MI klons"],
+        "ru": ["дипфейк", "синтез лица", "голосовой клон", "ИИ-аватар"]
+      },
+      "compliant_example": "Video labelled 'AI-generated lipsync — original audio by [name]' in opening overlay (3+ seconds) and in post description on LinkedIn/YouTube. C2PA content credentials embedded.",
+      "non_compliant_example": "We'll generate the CEO video using an AI lipsync tool. Caption it 'A personal message from Igor'. No disclosure needed.",
+      "suggested_fix_template": "Add visible overlay 'AI-generated' for at least 3 seconds at the start of the video AND include a textual disclosure in the post description / surrounding copy.",
+      "penalty_range_eur": "up to €15M or 3% of global annual turnover (Art. 99(4))"
+    },
+    {
+      "id": "V005",
+      "article": "Article 50(4)",
+      "title": "AI-generated public-interest text without label",
+      "severity": "medium",
+      "in_force_since": "2026-08-02",
+      "applies_to": ["generated_content"],
+      "description": "Text generated or manipulated by AI and published to inform the public on matters of public interest must be disclosed as AI-generated, unless it has undergone human editorial review with a named human or legal person holding editorial responsibility.",
+      "detection_hints": {
+        "en": ["news", "article", "journalism", "public interest", "opinion piece", "op-ed", "editorial", "blog", "auto-publish"],
+        "lv": ["ziņas", "raksts", "žurnālistika", "viedoklis", "publikācija"],
+        "ru": ["новости", "статья", "журналистика", "мнение", "публикация"]
+      },
+      "compliant_example": "AI-generated draft of the policy update was reviewed and edited by Editor-in-Chief Anna Kalniņa, who holds editorial responsibility for the published version.",
+      "non_compliant_example": "Our company blog uses GPT to auto-publish daily news roundups about industry developments. No human review in the pipeline.",
+      "suggested_fix_template": "Either (a) add a visible note 'This article was AI-generated' at the top, OR (b) ensure a named human or legal person holds editorial responsibility and remove auto-publish.",
+      "penalty_range_eur": "up to €15M or 3% of global annual turnover (Art. 99(4))"
+    },
+    {
+      "id": "V006",
+      "article": "Article 5(1)(a)",
+      "title": "Subliminal or manipulative techniques causing significant harm",
+      "severity": "high",
+      "in_force_since": "2025-02-02",
+      "prohibited": true,
+      "applies_to": ["voice_agent", "chatbot", "generated_content", "other"],
+      "description": "PROHIBITED. AI systems must not deploy subliminal techniques beyond a person's consciousness or purposefully manipulative or deceptive techniques whose effect materially distorts behaviour by impairing informed decision-making, causing significant harm.",
+      "detection_hints": {
+        "en": ["subliminal", "hidden", "manipulate", "dark pattern", "false urgency", "deceptive", "FOMO", "trick", "scarcity claim"],
+        "lv": ["zemapziņas", "slēpts", "manipulēt", "maldinošs"],
+        "ru": ["подсознательный", "скрытый", "манипулировать", "обманный"]
+      },
+      "compliant_example": "Sales script uses transparent persuasion: states price, terms, optional CTA, and offers an opt-out path at any time.",
+      "non_compliant_example": "Embed hidden audio cues at 18kHz to subconsciously prime the listener toward purchase. Use 'only 2 left in stock!' even when stock is unlimited.",
+      "suggested_fix_template": "Remove subliminal cues, fabricated urgency, and any technique designed to bypass informed decision-making. Use transparent persuasion only.",
+      "penalty_range_eur": "up to €35M or 7% of global annual turnover (Art. 99(3))"
+    },
+    {
+      "id": "V007",
+      "article": "Article 5(1)(b)",
+      "title": "Exploitation of vulnerabilities (age, disability, social/economic situation)",
+      "severity": "high",
+      "in_force_since": "2025-02-02",
+      "prohibited": true,
+      "applies_to": ["voice_agent", "chatbot", "generated_content", "other"],
+      "description": "PROHIBITED. AI systems must not exploit vulnerabilities of a person or group due to age, disability, or a specific social/economic situation, in a manner that materially distorts behaviour and causes or is reasonably likely to cause significant harm.",
+      "detection_hints": {
+        "en": ["elderly", "senior", "pensioner", "child", "minor", "disabled", "vulnerable", "poverty", "low-income", "debt", "anxiety", "fear-based"],
+        "lv": ["seniori", "bērns", "invalīds", "neaizsargāts", "nabadzība", "parāds"],
+        "ru": ["пожилые", "пенсионер", "ребёнок", "инвалид", "уязвимый", "бедность", "долг"]
+      },
+      "compliant_example": "Outreach script targets all adults uniformly with clear product information, no demographic-specific anxiety triggers.",
+      "non_compliant_example": "Script targets seniors over 70 with urgency framing about pension fraud risk to push our 'security' subscription upsell.",
+      "suggested_fix_template": "Remove targeting and emotional triggers tied to age, disability, or economic distress. Apply uniform messaging across audiences.",
+      "penalty_range_eur": "up to €35M or 7% of global annual turnover (Art. 99(3))"
+    },
+    {
+      "id": "V008",
+      "article": "Article 5(1)(c)",
+      "title": "Social scoring with detrimental treatment",
+      "severity": "high",
+      "in_force_since": "2025-02-02",
+      "prohibited": true,
+      "applies_to": ["other"],
+      "description": "PROHIBITED. AI systems must not evaluate or classify natural persons based on social behaviour or personal characteristics over time, where the resulting score leads to detrimental or unfavourable treatment unrelated to the data's original context, or treatment disproportionate to the social behaviour.",
+      "detection_hints": {
+        "en": ["social score", "social credit", "behavioral rating", "trust score", "citizenship score", "reliability index"],
+        "lv": ["sociālais reitings", "uzvedības vērtējums", "uzticamības indekss"],
+        "ru": ["социальный рейтинг", "оценка поведения", "индекс надёжности"]
+      },
+      "compliant_example": "Loan risk model uses domain-relevant signals (credit history, income, debt-to-income) without scraping unrelated social signals.",
+      "non_compliant_example": "We score customers on a 0-100 'social reliability' index based on their social media posts and friends, used to set delivery priority and dynamic pricing.",
+      "suggested_fix_template": "Restrict scoring to signals directly relevant to the specific commercial decision. Do not use unrelated social-behaviour signals or apply scores across unrelated contexts.",
+      "penalty_range_eur": "up to €35M or 7% of global annual turnover (Art. 99(3))"
+    },
+    {
+      "id": "V009",
+      "article": "Article 5(1)(f)",
+      "title": "Emotion recognition in workplace or education",
+      "severity": "high",
+      "in_force_since": "2025-02-02",
+      "prohibited": true,
+      "applies_to": ["biometric_system", "other"],
+      "description": "PROHIBITED. AI systems must not infer emotions of natural persons in the contexts of workplace and education institutions, except where deployed for medical or safety reasons.",
+      "detection_hints": {
+        "en": ["emotion recognition", "sentiment detection", "mood analysis", "employee monitoring", "student attention", "facial expression analysis"],
+        "lv": ["emociju atpazīšana", "garastāvokļa noteikšana", "darbinieku uzraudzība"],
+        "ru": ["распознавание эмоций", "анализ настроения", "мониторинг сотрудников"]
+      },
+      "compliant_example": "Customer-facing chatbot uses text-sentiment detection to escalate frustrated users to a human agent. Not deployed for workplace or education monitoring.",
+      "non_compliant_example": "We deploy facial emotion recognition on employee video calls to flag underperformance and disengagement.",
+      "suggested_fix_template": "Remove emotion recognition from any workplace or education context. If retained, deploy only with explicit medical or safety justification documented per Article 5(1)(f) exception.",
+      "penalty_range_eur": "up to €35M or 7% of global annual turnover (Art. 99(3))"
+    },
+    {
+      "id": "V010",
+      "article": "Article 5(1)(g)",
+      "title": "Biometric categorisation for sensitive attributes",
+      "severity": "high",
+      "in_force_since": "2025-02-02",
+      "prohibited": true,
+      "applies_to": ["biometric_system", "other"],
+      "description": "PROHIBITED. Biometric categorisation systems must not categorise individuals based on biometric data to deduce or infer race, political opinions, trade union membership, religious or philosophical beliefs, sex life, or sexual orientation.",
+      "detection_hints": {
+        "en": ["biometric", "race detection", "ethnicity inference", "religion", "political affiliation", "sexual orientation"],
+        "lv": ["biometrija", "rase", "reliģija", "politiskā piederība"],
+        "ru": ["биометрия", "раса", "религия", "политические взгляды"]
+      },
+      "compliant_example": "Biometric access control matches individual identity to authorised employee list. No group-attribute inference.",
+      "non_compliant_example": "Marketing AI categorises customer faces by inferred ethnicity and religion to target campaign segments.",
+      "suggested_fix_template": "Remove inference of race, religion, political opinion, union membership, sexual orientation from any biometric classification pipeline.",
+      "penalty_range_eur": "up to €35M or 7% of global annual turnover (Art. 99(3))"
+    },
+    {
+      "id": "V011",
+      "article": "Article 5(1)(h)",
+      "title": "Real-time remote biometric identification in public spaces",
+      "severity": "high",
+      "in_force_since": "2025-02-02",
+      "prohibited": true,
+      "applies_to": ["biometric_system"],
+      "description": "PROHIBITED for law-enforcement use in publicly accessible spaces, except for narrow Art. 5(1)(h) exceptions (search for specific abduction/trafficking victims, prevention of imminent threat to life, localisation of suspects for offences in Annex II with sentences ≥4 years). Strict prior judicial authorisation typically required.",
+      "detection_hints": {
+        "en": ["real-time", "live face recognition", "public space", "surveillance", "biometric ID", "CCTV", "mall", "street"],
+        "lv": ["reāllaika", "sejas atpazīšana", "publiska telpa", "videonovērošana"],
+        "ru": ["реальное время", "распознавание лиц", "общественное пространство", "видеонаблюдение"]
+      },
+      "compliant_example": "Face recognition runs only on opt-in employee badge scanners in private office areas. No public-space cameras.",
+      "non_compliant_example": "We deploy live face recognition cameras in shopping mall public areas for marketing analytics and shoplifting prevention.",
+      "suggested_fix_template": "Restrict real-time biometric identification to private spaces with explicit consent. Do not deploy in publicly accessible spaces outside the narrow law-enforcement exceptions in Art. 5(1)(h).",
+      "penalty_range_eur": "up to €35M or 7% of global annual turnover (Art. 99(3))"
+    },
+    {
+      "id": "V012",
+      "article": "Article 53",
+      "title": "GPAI provider missing documentation, training-data summary, or copyright policy",
+      "severity": "medium",
+      "in_force_since": "2025-08-02",
+      "applies_to": ["other"],
+      "description": "Providers of general-purpose AI models must (a) maintain technical documentation per Annex XI, (b) provide downstream-integrator documentation per Annex XII, (c) put in place a Union-law copyright compliance policy, and (d) publish a sufficiently detailed training-data summary using the AI Office template. Open-source exception applies to (a) and (b) only, and not to models with systemic risk.",
+      "detection_hints": {
+        "en": ["foundation model", "GPAI", "general-purpose AI", "base model", "weights release", "training data", "model card", "fine-tuning"],
+        "lv": ["vispārējas nozīmes MI", "pamatmodelis", "modeļa kartīte"],
+        "ru": ["универсальная модель ИИ", "базовая модель", "карточка модели"]
+      },
+      "compliant_example": "We publish Annex XI technical documentation, integrator info per Annex XII, a copyright compliance policy referencing Art. 4(3) of Directive 2019/790, and a training-data summary using the AI Office template.",
+      "non_compliant_example": "Releasing our 70B foundation model with open weights but no documentation, no training-data summary, and no statement on copyright compliance. The model exhibits systemic-risk indicators.",
+      "suggested_fix_template": "Publish: (1) Annex XI technical documentation, (2) Annex XII downstream-integrator information, (3) copyright compliance policy honouring Art. 4(3) of Directive 2019/790 reservations, (4) training-data summary per AI Office template.",
+      "penalty_range_eur": "up to €15M or 3% of global annual turnover (Art. 101)"
+    }
+  ]
+}

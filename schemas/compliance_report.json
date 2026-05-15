@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ComplianceReport",
+  "description": "Structured output of audit_ai_deployment(). Used both as the JSON Schema for validation and as the input_schema of the submit_compliance_report tool that Claude is forced to call.",
+  "type": "object",
+  "required": [
+    "compliance_status",
+    "risk_score",
+    "violations",
+    "general_recommendations",
+    "disclaimer",
+    "audited_at",
+    "audit_version"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "compliance_status": {
+      "type": "string",
+      "enum": ["compliant", "needs_review", "non_compliant"],
+      "description": "Overall verdict. 'non_compliant' requires at least one high-severity violation with clear evidence."
+    },
+    "risk_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Rough magnitude of compliance risk. 0=clean, 4-6=Art. 50 gap, 7+=Art. 5 prohibition match."
+    },
+    "violations": {
+      "type": "array",
+      "description": "Triggered findings, one entry per catalog violation that fired. Empty list means no violations.",
+      "items": {
+        "type": "object",
+        "required": [
+          "violation_id",
+          "article",
+          "title",
+          "severity",
+          "evidence",
+          "explanation",
+          "suggested_fix",
+          "deadline"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "violation_id": {
+            "type": "string",
+            "pattern": "^V[0-9]{3}$",
+            "description": "Exactly one of the catalog IDs (V001-V012). Do not invent new IDs."
+          },
+          "article": {
+            "type": "string",
+            "description": "AI Act article reference, copied verbatim from catalog (e.g., 'Article 50(1)')."
+          },
+          "title": {
+            "type": "string",
+            "description": "Catalog title, copied verbatim."
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["high", "medium", "low"]
+          },
+          "evidence": {
+            "type": "string",
+            "description": "Verbatim quote from input text (max ~200 chars). Use '[absence of required disclosure]' if the violation is an absence rather than a present quote."
+          },
+          "explanation": {
+            "type": "string",
+            "description": "1-2 sentences explaining why this is a problem in this specific input."
+          },
+          "suggested_fix": {
+            "type": "string",
+            "description": "Concrete text the user can paste in. For V001/V002 disclosure fixes, given in the same language as the input."
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date",
+            "description": "When the obligation entered or enters into force (ISO date). Copied from catalog's in_force_since."
+          }
+        }
+      }
+    },
+    "general_recommendations": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Broader suggestions not tied to a specific catalog ID. May be empty."
+    },
+    "disclaimer": {
+      "type": "string",
+      "description": "Always: 'This is an automated first-pass check, not legal advice. Consult qualified counsel before deploying.'"
+    },
+    "audited_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC timestamp of when this audit was produced."
+    },
+    "audit_version": {
+      "type": "string",
+      "description": "Version of the audit ruleset that produced this report."
+    }
+  }
+}

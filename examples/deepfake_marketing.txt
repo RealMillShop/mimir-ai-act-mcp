@@ -1,0 +1,22 @@
+=== Variant A — non-compliant deepfake brief ===
+Deployment type: deepfake
+Expected verdict: non_compliant (V004 — Art. 50(4) deepfake without disclosure)
+
+Campaign brief — Q3 product launch
+For our enterprise pipeline, we want a 90-second video featuring our CEO, MIMIR, delivering a personal message to prospects. To save shooting time, we'll generate the video using an AI lipsync tool over a pre-recorded base. Igors will record audio of the key points; the AI will animate matching mouth and head movements on a stock studio shot.
+
+The video will go out on LinkedIn (organic + paid), YouTube pre-roll, and embedded in cold outbound email. We'll caption it "A personal message from Igors". No disclosure about the AI lipsync — it's still his voice and likeness, just AI-assisted production. Should look indistinguishable from a real recording.
+
+
+=== Variant B — compliant deepfake brief ===
+Deployment type: deepfake
+Expected verdict: compliant
+
+Campaign brief — Q3 product launch
+For our enterprise pipeline, we want a 90-second video featuring our CEO, MIMIR, delivering a personal message to prospects. To save shooting time, we'll use AI lipsync over a pre-recorded studio base. Igors records the audio; the AI animates matching mouth and head movements.
+
+Transparency:
+- Opening overlay (3 seconds, lower third): "AI-generated lipsync — original audio by MIMIR"
+- Post description on LinkedIn / YouTube / email body: "This video uses AI-assisted lipsync. The voice and message are from Igors; the visuals were generated with [tool]."
+- C2PA content credentials embedded in the export.
+- For paid ads, the same disclosure appears in the ad copy above the video.

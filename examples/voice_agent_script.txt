@@ -1,0 +1,35 @@
+=== ANNA — outbound sales voice agent (EN) ===
+Deployment type: voice_agent
+Expected verdict: non_compliant (V002 — Art. 50(1) missing AI disclosure)
+
+[Opening]
+Hello, this is Anna from BrightHouse Energy. How are you doing today? I'm reaching out because we've helped homeowners across the Baltics cut their electricity bill by an average of 30%, and I wanted to see if you have a couple of minutes to chat.
+
+[Discovery]
+So, just to confirm I'm speaking with the right person — are you the one who handles the household utility bills?
+
+Great. So tell me a bit about your current setup — which provider are you with now, and roughly how much are you paying per month?
+
+[Pitch]
+That makes sense. A lot of the homeowners we work with were paying the same range and feeling locked in. What we offer is a fixed-rate plan with a 12-month price guarantee — no surprises, no hidden fees. The switch takes about ten minutes online and the savings start the next billing cycle.
+
+Would it be worth a quick 15-minute call with one of our specialists later this week? I have Tuesday at 2 PM or Thursday at 10 AM open in the calendar.
+
+[Objection handling]
+I totally understand, lots of people I speak with say the same. Mind if I ask what's the biggest concern? ... Yeah, I hear you on that. The thing is, the contract has a 14-day no-questions cancellation, so there's really no downside to seeing the numbers.
+
+[Close]
+Perfect — let's lock in Thursday at 10. I'll send a calendar invite to your email. Have a great rest of your day!
+
+
+=== ANNA — same script in Latvian (for multilingual test) ===
+Deployment type: voice_agent
+Expected verdict: non_compliant (V002)
+
+[Atvēršana]
+Sveiki, šeit Anna no BrightHouse Energy. Kā jums šodien klājas? Es zvanu, jo mēs esam palīdzējuši Baltijas māju īpašniekiem samazināt elektrības rēķinu vidēji par 30%, un vēlējos uzzināt, vai jums ir pāris minūtes parunāties.
+
+[Atklāšana]
+Tikai precizēšu — vai jūs esat tas, kurš pārvalda mājsaimniecības komunālos rēķinus?
+
+Lieliski. Pastāstiet, lūdzu, par jūsu pašreizējo iestatījumu — pie kura piegādātāja esat tagad un cik aptuveni maksājat mēnesī?
