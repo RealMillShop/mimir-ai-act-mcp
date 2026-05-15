@@ -13,6 +13,7 @@ routed via Caddy ``/api/ai-act-audit`` → ``localhost:8200``.
 """
 from __future__ import annotations
 
+import logging
 import os
 from typing import Any
 
@@ -22,6 +23,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 
 from server import DEPLOYMENT_TYPES, audit_ai_deployment
+
+log = logging.getLogger("mimir-ai-act-api")
 
 app = FastAPI(
     title="MIMIR EU AI Act Compliance Checker",
@@ -69,6 +72,12 @@ def audit(req: AuditRequest) -> dict[str, Any]:
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except APIError as e:
-        raise HTTPException(status_code=502, detail=f"Upstream model API error: {e.message}")
+        # Log full detail server-side; return a generic message to avoid leaking
+        # billing state, request IDs, or upstream error bodies to the public endpoint.
+        log.exception("Anthropic API error: status=%s message=%s", getattr(e, "status_code", "?"), e.message)
+        if getattr(e, "status_code", None) == 429:
+            raise HTTPException(status_code=503, detail="Rate limit exceeded. Please try again shortly.")
+        raise HTTPException(status_code=502, detail="Audit service is temporarily unavailable.")
     except RuntimeError as e:
-        raise HTTPException(status_code=502, detail=str(e))
+        log.exception("Audit RuntimeError")
+        raise HTTPException(status_code=502, detail="Audit service error.")
