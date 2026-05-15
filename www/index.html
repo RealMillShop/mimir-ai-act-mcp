@@ -5,7 +5,150 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>EU AI Act Compliance Checker · MIMIR</title>
   <meta name="description" content="Free first-pass audit of your AI deployment (voice agent, chatbot, generated content, deepfake) against the EU AI Act Articles 5, 50, 53. Built by MIMIR.">
-  <link rel="stylesheet" href="ai-act-checker.css">
+  <style>
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #fafaf7;
+      color: #1a1a1a;
+      margin: 0;
+      line-height: 1.55;
+      font-size: 16px;
+    }
+    a { color: #1a1a1a; }
+    a:hover { color: #5a5a5a; }
+    .checker {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    .back { margin: 0 0 1rem; }
+    .back a { color: #666; text-decoration: none; font-size: 0.9rem; }
+    .back a:hover { color: #1a1a1a; }
+    h1 { font-size: 1.85rem; margin: 0.25rem 0 0.75rem; line-height: 1.2; }
+    h2 { font-size: 1.25rem; margin: 2rem 0 1rem; }
+    .lede { color: #444; margin: 0 0 1rem; }
+    .deadlines {
+      background: #f4f0e6;
+      padding: 0.5rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      margin: 0 0 2rem;
+    }
+    form label { display: block; font-weight: 600; margin-bottom: 1.25rem; }
+    select, textarea {
+      width: 100%;
+      font: inherit;
+      padding: 0.6rem 0.7rem;
+      border: 1px solid #d4d4d0;
+      border-radius: 6px;
+      background: white;
+      margin-top: 0.4rem;
+      font-weight: 400;
+    }
+    select:focus, textarea:focus { outline: 2px solid #1a1a1a; outline-offset: -1px; }
+    textarea { resize: vertical; min-height: 160px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92rem; }
+    button {
+      font: inherit;
+      font-weight: 600;
+      background: #1a1a1a;
+      color: white;
+      padding: 0.7rem 1.6rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover { background: #333; }
+    button[disabled] { opacity: 0.6; cursor: wait; }
+    .hint { font-size: 0.85rem; color: #666; margin-top: 0.65rem; }
+    #result {
+      background: white;
+      border: 1px solid #e4e4dc;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+    #result-summary { font-size: 1.05rem; margin-bottom: 1rem; }
+    #result-summary .status {
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+    }
+    #result-summary .status.compliant { background: #d8f1cf; color: #1f5e1f; }
+    #result-summary .status.needs_review { background: #fff3cd; color: #6b5500; }
+    #result-summary .status.non_compliant { background: #f5d4d4; color: #7a1d1d; }
+    #result-violations { padding-left: 1.2rem; }
+    #result-violations li { margin: 1rem 0; }
+    .violation-id {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      color: #666;
+      font-size: 0.8rem;
+      display: block;
+      margin-top: 0.2rem;
+    }
+    .violation-severity {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-left: 0.4rem;
+      letter-spacing: 0.04em;
+    }
+    .violation-severity.high { background: #f5d4d4; color: #7a1d1d; }
+    .violation-severity.medium { background: #fff3cd; color: #6b5500; }
+    .violation-severity.low { background: #d8f1cf; color: #1f5e1f; }
+    #result blockquote {
+      margin: 0.4rem 0;
+      padding-left: 0.8rem;
+      border-left: 2px solid #d4d4d0;
+      color: #555;
+      font-style: italic;
+    }
+    .fix {
+      background: #f4f4ee;
+      border-left: 3px solid #1a1a1a;
+      padding: 0.6rem 0.85rem;
+      margin-top: 0.6rem;
+      font-size: 0.95rem;
+      border-radius: 0 4px 4px 0;
+    }
+    details summary { cursor: pointer; color: #666; font-size: 0.9rem; }
+    .disclaimer { font-size: 0.8rem; color: #888; margin-top: 1.5rem; }
+    .cta {
+      background: #1a1a1a;
+      color: #fafaf7;
+      border-radius: 10px;
+      padding: 1.75rem;
+      margin-top: 2rem;
+    }
+    .cta h2 { margin-top: 0; color: white; }
+    .cta p { color: #d4d4ce; }
+    .cta a.button {
+      background: white;
+      color: #1a1a1a;
+      display: inline-block;
+      text-decoration: none;
+      padding: 0.55rem 1.1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    .cta a.button:hover { background: #f0f0e6; }
+    footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e4e4dc;
+      font-size: 0.85rem;
+      color: #888;
+      text-align: center;
+    }
+    footer a { color: #666; }
+  </style>
 </head>
 <body>
   <main class="checker">
@@ -71,6 +214,105 @@
       </p>
     </footer>
   </main>
-  <script src="ai-act-checker.js"></script>
+
+  <script>
+    (function () {
+      const form = document.getElementById("audit-form");
+      const submitBtn = document.getElementById("submit");
+      const resultSection = document.getElementById("result");
+      const summary = document.getElementById("result-summary");
+      const violationsList = document.getElementById("result-violations");
+      const recsDetails = document.getElementById("result-recommendations");
+      const disclaimerEl = document.getElementById("result-disclaimer");
+      const leadCta = document.getElementById("lead-cta");
+
+      const STATUS_LABEL = {
+        compliant: "COMPLIANT",
+        needs_review: "NEEDS REVIEW",
+        non_compliant: "NON-COMPLIANT",
+      };
+
+      function escapeHtml(s) {
+        return String(s)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function renderReport(report) {
+        const statusLabel = STATUS_LABEL[report.compliance_status] || report.compliance_status;
+        summary.innerHTML =
+          `<span class="status ${escapeHtml(report.compliance_status)}">${escapeHtml(statusLabel)}</span> ` +
+          `· risk score <strong>${escapeHtml(String(report.risk_score))}/10</strong> ` +
+          `· ${report.violations.length} violation${report.violations.length === 1 ? "" : "s"}`;
+
+        violationsList.innerHTML = report.violations
+          .map(
+            (v) => `
+          <li>
+            <strong>${escapeHtml(v.title)}</strong>
+            <span class="violation-severity ${escapeHtml(v.severity)}">${escapeHtml(v.severity)}</span>
+            <span class="violation-id">${escapeHtml(v.violation_id)} · ${escapeHtml(v.article)} · in force ${escapeHtml(v.deadline)}</span>
+            <p>${escapeHtml(v.explanation)}</p>
+            <details><summary>Evidence</summary><blockquote>${escapeHtml(v.evidence)}</blockquote></details>
+            <div class="fix"><strong>Fix:</strong> ${escapeHtml(v.suggested_fix)}</div>
+          </li>`
+          )
+          .join("");
+
+        if (report.general_recommendations && report.general_recommendations.length) {
+          recsDetails.hidden = false;
+          recsDetails.querySelector("ul").innerHTML = report.general_recommendations
+            .map((r) => `<li>${escapeHtml(r)}</li>`)
+            .join("");
+        } else {
+          recsDetails.hidden = true;
+        }
+
+        disclaimerEl.textContent = report.disclaimer;
+        resultSection.hidden = false;
+        leadCta.hidden = report.violations.length === 0;
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+          text: document.getElementById("text").value.trim(),
+          deployment_type: document.getElementById("deployment_type").value,
+        };
+        if (!payload.text) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Auditing…";
+        resultSection.hidden = true;
+        leadCta.hidden = true;
+
+        try {
+          const res = await fetch("/api/ai-act-audit/audit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({ detail: res.statusText }));
+            throw new Error(err.detail || `HTTP ${res.status}`);
+          }
+          const report = await res.json();
+          renderReport(report);
+        } catch (err) {
+          summary.innerHTML = `<strong>Error:</strong> ${escapeHtml(err.message)}`;
+          violationsList.innerHTML = "";
+          recsDetails.hidden = true;
+          disclaimerEl.textContent = "";
+          resultSection.hidden = false;
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Audit";
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

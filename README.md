@@ -138,7 +138,9 @@ Configuration lives in [.actor/actor.json](.actor/actor.json) and [.actor/INPUT_
 
 ### mimir.lv lead page
 
-Static landing at [www/](www/) (`index.html` + minimal CSS/JS). POSTs to the same `/audit` endpoint as the HTTP wrapper. Rate-limited at the Caddy layer to 3 audits per IP per day for the free funnel; paying users go through Apify.
+Static landing at [www/index.html](www/index.html) — single self-contained file with CSS and JS inlined. POSTs to the same `/audit` endpoint as the HTTP wrapper. Rate-limited at the Caddy layer to 3 audits per IP per day for the free funnel; paying users go through Apify.
+
+> The CSS and JS are inlined deliberately. We initially shipped them as separate files (`ai-act-checker.css`, `ai-act-checker.js`) and found that common ad-blocker rules matched `*-checker*` and silently blocked them — the page rendered blank in Chrome with uBlock/Brave/etc. Inlining is robust against this and the total payload is ~12 KB, so caching benefits are immaterial.
 
 ## Testing
 
