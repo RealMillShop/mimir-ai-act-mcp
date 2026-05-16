@@ -29,13 +29,31 @@ from typing import Any
 from anthropic import APIError
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from server import DEPLOYMENT_TYPES, audit_ai_deployment
 
 log = logging.getLogger("mimir-ai-act-api")
+
+# Hard cap on request body size — guards uvicorn from reading huge bodies into
+# memory before Pydantic validation runs. /audit accepts up to 20_000 chars of
+# `text`, so 64 KB is generous headroom for JSON framing + headers.
+MAX_BODY_BYTES = 64 * 1024
+
+
+class BodySizeLimitMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        cl = request.headers.get("content-length")
+        if cl and cl.isdigit() and int(cl) > MAX_BODY_BYTES:
+            return JSONResponse(
+                {"detail": f"Request body exceeds {MAX_BODY_BYTES} bytes."},
+                status_code=413,
+            )
+        return await call_next(request)
 
 
 def client_ip(request: Request) -> str:
@@ -62,6 +80,7 @@ app = FastAPI(
 )
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(BodySizeLimitMiddleware)
 
 ALLOWED_ORIGINS = [
     o.strip()
