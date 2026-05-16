@@ -47,24 +47,7 @@ curl -s https://your-site.example/api/ai-act-audit/health
 
 ### Rate limiting
 
-The current FastAPI wrapper does not rate-limit itself. Add either:
-
-- Caddy `rate_limit` directive (requires the `caddy-rate-limit` module):
-  ```caddy
-  handle /api/ai-act-audit/* {
-      rate_limit {
-          zone ai_act_audit {
-              key {remote_host}
-              events 3
-              window 1d
-          }
-      }
-      reverse_proxy localhost:8200
-  }
-  ```
-- Or a `slowapi` middleware in `http_main.py` (no extra Caddy module needed).
-
-Recommend Caddy-side for now — keeps server stateless.
+Implemented in-app via [slowapi](https://github.com/laurentS/slowapi): `@limiter.limit("3/day")` on `POST /audit`, keyed by `X-Forwarded-For` (set by Caddy). Trips return **429 Too Many Requests** with a standard slowapi body. Limit state is per-worker, in-memory — fine for the single-worker default; for multi-worker / multi-instance, switch the limiter to a Redis backend (`Limiter(storage_uri="redis://...")`).
 
 ### Rollback
 
