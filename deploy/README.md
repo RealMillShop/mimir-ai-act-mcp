@@ -1,25 +1,24 @@
 # Deployment runbook — MIMIR EU AI Act Compliance Checker
 
-Three deployment targets, in order of priority:
+Three deployment targets:
 
-1. **MIMIR VPS** (`your-vps.example.com`) — FastAPI HTTP wrapper as `mimir-ai-act-api` systemd unit on port 8200, fronted by Caddy at `mimir.lv/api/ai-act-audit/` and `mimir.lv/ai-act-checker`.
+1. **Your VPS** — FastAPI HTTP wrapper as `mimir-ai-act-api` systemd unit on port 8200, fronted by Caddy (or nginx) at `/api/ai-act-audit/` and `/ai-act-checker`.
 2. **Apify Store** — `.actor/` + `Dockerfile.actor` build an Actor that calls `audit_ai_deployment()` from input.
 3. **Claude Desktop / Cursor** (local) — stdio MCP via `server.py`. See root [README.md](../README.md).
 
 ---
 
-## 1. MIMIR VPS deploy
+## 1. VPS deploy (systemd + Caddy)
 
-Assumes the repo is already at `/root/mimir-ai-act-mcp/` with `.venv/` set up (Phase 2 already did this for offline tests).
+Assumes the repo is cloned and `.venv` set up: `python3 -m venv .venv && .venv/bin/pip install -e ".[http]"`.
 
 ```bash
-ssh root@your-vps.example.com
-cd /root/mimir-ai-act-mcp
+ssh root@your-vps
+cd /path/to/mimir-ai-act-mcp
 
-# 1a. Install systemd unit and inject the API key from the existing mimir-api unit
+# 1a. Install systemd unit and set the API key
 cp deploy/mimir-ai-act-api.service /etc/systemd/system/
-KEY=$(systemctl show your-anthropic-service --property=Environment | grep -oP 'ANTHROPIC_API_KEY=\K\S+')
-sed -i "s|REPLACE_ME|$KEY|" /etc/systemd/system/mimir-ai-act-api.service
+sed -i 's|REPLACE_ME|sk-ant-YOUR-KEY-HERE|' /etc/systemd/system/mimir-ai-act-api.service
 chmod 600 /etc/systemd/system/mimir-ai-act-api.service
 systemctl daemon-reload
 systemctl enable --now mimir-ai-act-api
@@ -29,21 +28,21 @@ systemctl status mimir-ai-act-api --no-pager
 curl -s http://127.0.0.1:8200/health
 # Expected: {"status":"ok","service":"mimir-ai-act-mcp","version":"1.0"}
 
-# 1c. Wire into Caddy — merge deploy/caddy-snippet.conf into the mimir.lv block
-#     BEFORE the existing `/api/*` → :8100 handler. See the snippet for ordering notes.
+# 1c. Wire into Caddy — merge deploy/caddy-snippet.conf into your site block,
+#     BEFORE any existing generic `/api/*` handler (first-match-wins on path).
 nano /etc/caddy/Caddyfile
 caddy validate --config /etc/caddy/Caddyfile
 systemctl reload caddy
 
-# 1d. Drop the static landing page into the mimir.lv web root
+# 1d. Drop the static landing page into the web root
 mkdir -p /var/www/ai-act-checker
 cp www/* /var/www/ai-act-checker/
 
 # 1e. End-to-end smoke test
-curl -s https://mimir.lv/api/ai-act-audit/health
+curl -s https://your-site.example/api/ai-act-audit/health
 # Expected: {"status":"ok",...}
 
-# Open https://mimir.lv/ai-act-checker in a browser, paste a voice script, audit.
+# Open https://your-site.example/ai-act-checker in a browser, paste a voice script, audit.
 ```
 
 ### Rate limiting
